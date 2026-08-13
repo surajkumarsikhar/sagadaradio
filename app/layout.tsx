@@ -37,7 +37,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_IN",
-    url: "https://yourdomain.com",
+    url: "https://www.sagadaradio.fun/",
     siteName: "Sagada Radio",
 
     title: "Sagada Radio",
