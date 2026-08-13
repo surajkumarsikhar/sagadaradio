@@ -63,42 +63,68 @@ export default function MusicPlayer({
         return () => clearInterval(timer);
     }, []);
 
-    const playSong = (
-        songIndex: number
-    ) => {
-        const selected =
-            songs[songIndex];
+    const playSong = (songIndex: number) => {
+        if (!songs[songIndex]) return;
+
+        const selected = songs[songIndex];
 
         setIndex(songIndex);
         setProgress(0);
 
-        setTimeout(() => {
-            playerRef.current?.loadVideoById(
-                selected.id
-            );
+        playerRef.current?.loadVideoById(
+            selected.id
+        );
 
-            playerRef.current?.playVideo();
-        }, 50);
+        playerRef.current?.playVideo();
     };
 
     const next = () => {
         if (!songs.length) return;
 
-        const nextIndex =
-            (index + 1) % songs.length;
+        setIndex((currentIndex) => {
+            const nextIndex =
+                (currentIndex + 1) % songs.length;
 
-        playSong(nextIndex);
+            const nextSong = songs[nextIndex];
+
+            setProgress(0);
+
+            setTimeout(() => {
+                playerRef.current?.loadVideoById(
+                    nextSong.id
+                );
+
+                playerRef.current?.playVideo();
+            }, 0);
+
+            return nextIndex;
+        });
     };
 
     const previous = () => {
         if (!songs.length) return;
 
-        const previousIndex =
-            index === 0
-                ? songs.length - 1
-                : index - 1;
+        setIndex((currentIndex) => {
+            const previousIndex =
+                currentIndex === 0
+                    ? songs.length - 1
+                    : currentIndex - 1;
 
-        playSong(previousIndex);
+            const previousSong =
+                songs[previousIndex];
+
+            setProgress(0);
+
+            setTimeout(() => {
+                playerRef.current?.loadVideoById(
+                    previousSong.id
+                );
+
+                playerRef.current?.playVideo();
+            }, 0);
+
+            return previousIndex;
+        });
     };
 
     const togglePlay = () => {
@@ -165,10 +191,6 @@ export default function MusicPlayer({
                 videoId={song.id}
                 onReady={(player) => {
                     playerRef.current = player;
-
-                    player.loadVideoById(
-                        song.id
-                    );
                 }}
                 onStateChange={(state) => {
 
